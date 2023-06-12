@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "./protos";
+
+enum OrderStatus {
+  Working = 0;
+  Rejected = 1;
+  Cancelled = 2;
+  Completed = 3;
+}
+
+enum OrderType {
+  Limit = 0;
+  Market = 1;
+  StopLimit = 2;
+  StopMarket = 3;
+}
+
+enum OrderSide {
+  Buy = 0;
+  Sell = 1;
+}
+
+enum RejectReason {
+  NoRejection = 0;
+  InstrumentNotFound = 1;
+  OrderNotFound = 2;
+  InvalidOrderType = 3;
+  InvalidAccount = 4;
+  InvalidSide = 5;
+  InvalidAmount = 6;
+  InvalidLimitPrice = 7;
+  InvalidQuoteLimit = 8;
+  InvalidActivationPrice = 9;
+  InvalidTimeInForce = 10;
+  MarketHalted = 11;
+  MarketPaused = 12;
+  NoCounterOrders = 13;
+  MissingExpirationTime = 14;
+  IncorrectExpirationTime = 15;
+  InternalError = 16;
+  IllegalStatusSwitch = 17;
+  OrderAlreadyExists = 18;
+  InstrumentNotReady = 19;
+  ExternalSystemError = 20;
+}
+
+enum ReportCause {
+  NONE = 0;
+  NewOrder = 1;
+  CancelOrder = 2;
+  MassCancel = 3;
+  Expiration = 4;
+  Trigger = 5;
+  MarketStatusChange = 6;
+}
+
+enum TimeInForce {
+  GoodTillCancel = 0;
+  ImmediateOrCancel = 1;
+  FillOrKill = 2;
+}
+
+enum CancelReason {
+  NotCancelled = 0;
+  CancelledByTrader = 1;
+  CancelledBySystem = 2;
+  SelfMatchPrevention = 3;
+  OrderTimeInForce = 4;
+  Liquidation = 100;
+}
+
+
+message TradeData {
+  int64 TradeId = 1;
+  float Amount = 2;
+  float ExecutionPrice = 3;
+  OrderStatus OrderStatus = 4;
+  int64 AccountId = 5;
+  string MatchedOrderExternalId = 6;
+  int64 MatchedOrderId = 7;
+  double RemainingAmount = 8;
+}
+
+message Execution {
+  string Origin = 1;
+  OrderSide Side = 2;
+  float RequestedPrice = 3;
+  float RequestedAmount = 4;
+  float RemainingAmount = 5;
+  int64 ExecutedAt = 6;
+  OrderStatus OrderStatus = 7;
+  repeated TradeData Trades = 8;
+  OrderType OrderType = 9;
+  int64 Version = 10;
+  int64 AccountId = 11;
+  RejectReason RejectReason = 12;
+  ReportCause ReportCause = 13;
+  string InstructionId = 14;
+  string ExternalOrderId = 15;
+  int32 ExecutionEngineMarketId = 16;
+  int64 OrderId = 17;
+  CancelReason CancelReason = 18;
+  int64 TxId = 19;
+  TimeInForce TimeInForce = 20;
+  string CancelledBy = 21;
+}

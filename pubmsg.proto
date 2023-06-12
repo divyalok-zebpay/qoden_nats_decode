@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "./protos";
+
+message PubMsg {
+  string clientID = 1;  // ClientID
+  string guid     = 2;  // guid
+  string subject  = 3;  // subject
+  string reply    = 4;  // optional reply
+  bytes  data     = 5;  // payload
+
+  bytes  sha256  = 10; // optional sha256 of data
+}

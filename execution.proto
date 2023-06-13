@@ -75,35 +75,35 @@ enum CancelReason {
 
 message TradeData {
   int64 TradeId = 1;
-  float Amount = 2;
-  float ExecutionPrice = 3;
-  OrderStatus OrderStatus = 4;
-  int64 AccountId = 5;
-  string MatchedOrderExternalId = 6;
-  int64 MatchedOrderId = 7;
-  double RemainingAmount = 8;
+  string Amount = 4;
+  string ExecutionPrice = 5;
+  OrderStatus OrderStatus = 7;
+  int64 AccountId = 11;
+  string MatchedOrderExternalId = 14;
+  int64 MatchedOrderId = 16;
+  string RemainingAmount = 17;
 }
 
 message Execution {
-  string Origin = 1;
-  OrderSide Side = 2;
-  float RequestedPrice = 3;
-  float RequestedAmount = 4;
-  float RemainingAmount = 5;
-  int64 ExecutedAt = 6;
-  OrderStatus OrderStatus = 7;
-  repeated TradeData Trades = 8;
-  OrderType OrderType = 9;
-  int64 Version = 10;
-  int64 AccountId = 11;
-  RejectReason RejectReason = 12;
-  ReportCause ReportCause = 13;
-  string InstructionId = 14;
-  string ExternalOrderId = 15;
-  int32 ExecutionEngineMarketId = 16;
-  int64 OrderId = 17;
-  CancelReason CancelReason = 18;
-  int64 TxId = 19;
-  TimeInForce TimeInForce = 20;
-  string CancelledBy = 21;
+  string Origin = 4;
+  OrderSide Side = 7;
+  string RequestedPrice = 8;
+  string RequestedAmount = 9;
+  string RemainingAmount = 10;
+  int64 ExecutedAt = 13;
+  OrderStatus OrderStatus = 14;
+  repeated TradeData Trades = 16;
+  OrderType OrderType = 20;
+  int64 Version = 22;
+  int64 AccountId = 23;
+  RejectReason RejectReason = 25;
+  ReportCause ReportCause = 26;
+  string InstructionId = 27;
+  string ExternalOrderId = 28;
+  int32 ExecutionEngineMarketId = 29;
+  int64 OrderId = 30;
+  CancelReason CancelReason = 31;
+  int64 TxId = 32;
+  TimeInForce TimeInForce = 34;
+  string CancelledBy = 35;
 }

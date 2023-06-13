@@ -1,10 +1,9 @@
 package main
 
 import (
-	"encoding/hex"
 	"fmt"
+	"log"
 	"nats/protos"
-	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/protobuf/proto"
@@ -19,7 +18,12 @@ func main() {
 	// --- STAN ---
 	clusterID := "test-cluster"
 	clientID := "3bd44ce8-20be-4129-870d-e2cc767157a"
-	sc, err := stan.Connect(clusterID, clientID)
+	url := "nats://localhost:4222"
+	sc, err := stan.Connect(clusterID, clientID, stan.NatsURL(url),
+		stan.Pings(1, 30),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			log.Fatalf("Connection lost, reason: %v", reason)
+		}))
 
 	if err != nil {
 		fmt.Printf("Err occured while connecting stan: %v\n\n", err.Error())
@@ -28,29 +32,92 @@ func main() {
 	// Simple Synchronous Publisher
 	sc.Publish("USER", []byte("Hello World"))
 
+	// sc.QueueSubscribe("EXEC", "my-group", func(m *stan.Msg) {
+	// 	fmt.Printf("\n\nyaya\n\n")
+	// 	fmt.Printf("Data: %v\n\n", m.Data)
+	// }, stan.StartAtSequence(0))
+
 	// Simple Async Subscriber
 	_, err = sc.Subscribe("EXEC", func(m *stan.Msg) {
 		fmt.Printf("Data: %v\n\n", m.Data)
-		fmt.Printf("Data: %#v\n\n", m.Data)
-		fmt.Printf("Data: %+v\n\n", m.Data)
-		fmt.Printf("Data: %q\n\n", m.Data)
-		fmt.Printf("Data: %+q\n\n", m.Data)
+		// fmt.Printf("Data: %#v\n\n", m.Data)
+		// fmt.Printf("Data: %+v\n\n", m.Data)
+		// fmt.Printf("Data: %q\n\n", m.Data)
+		// fmt.Printf("Data: %+q\n\n", m.Data)
 		fmt.Printf("Data: %#q\n\n", m.Data)
-		fmt.Printf("Data: %x\n\n", m.Data)
+		// fmt.Printf("Data: %x\n\n", m.Data)
 		fmt.Printf("Data: %+x\n\n", m.Data)
 		fmt.Printf("Data: %+v\n\n", string(m.Data[:]))
-		fmt.Printf("Data: %+v\n\n", hex.EncodeToString(m.Data))
+		// fmt.Printf("Data: %+v\n\n", hex.EncodeToString(m.Data))
 
-		val1, size := utf8.DecodeRune(m.Data)
-		fmt.Printf("DecodeRune: %c, %v\n\n", val1, size)
+		// val1, size := utf8.DecodeRune(m.Data)
+		// fmt.Printf("DecodeRune: %c, %v\n\n", val1, size)
 
 		// val2, size := utf8.DecodeLastRune(m.Data)
 		// fmt.Printf("DecodeLastRune: %c, %v\n\n", val2, size)
 
-		// varr := &protos.PubMsg{}
-		varr := &protos.Execution{}
+		// var b bytes.Buffer
+		// n, er := b.Read(m.Data)
+		// fmt.Printf("n: %v, er: %v\n\n", n, er)
 
+		varr := &protos.MsgProto{}
 		err := proto.Unmarshal(m.Data, varr)
+		if err != nil {
+			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
+		} else {
+			fmt.Printf("Received a message: %+v\n", varr)
+		}
+
+		varr2 := &protos.PubMsg{}
+		err = proto.Unmarshal(m.Data, varr2)
+		if err != nil {
+			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
+		} else {
+			fmt.Printf("Received a message: %+v\n", varr)
+		}
+
+		varr3 := &protos.Ack{}
+		err = proto.Unmarshal(m.Data, varr3)
+		if err != nil {
+			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
+		} else {
+			fmt.Printf("Received a message: %+v\n", varr)
+		}
+
+		varr4 := &protos.ConnectResponse{}
+		err = proto.Unmarshal(m.Data, varr4)
+		if err != nil {
+			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
+		} else {
+			fmt.Printf("Received a message: %+v\n", varr)
+		}
+
+		varr5 := &protos.PubAck{}
+		err = proto.Unmarshal(m.Data, varr5)
+		if err != nil {
+			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
+		} else {
+			fmt.Printf("Received a message: %+v\n", varr)
+		}
+
+		varr6 := &protos.SubscriptionRequest{}
+		err = proto.Unmarshal(m.Data, varr6)
+		if err != nil {
+			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
+		} else {
+			fmt.Printf("Received a message: %+v\n", varr)
+		}
+
+		varr7 := &protos.SubscriptionResponse{}
+		err = proto.Unmarshal(m.Data, varr7)
+		if err != nil {
+			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
+		} else {
+			fmt.Printf("Received a message: %+v\n", varr)
+		}
+
+		varr8 := &protos.Execution{}
+		err = proto.Unmarshal(m.Data, varr8)
 		if err != nil {
 			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
 		} else {

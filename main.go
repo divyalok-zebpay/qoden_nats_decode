@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"nats/protos"
+	protos "nats/protos/execution"
+	protos2 "nats/protos/neworder"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/protobuf/proto"
@@ -32,10 +33,10 @@ func main() {
 	// Simple Synchronous Publisher
 	sc.Publish("USER", []byte("Hello World"))
 
-	// sc.QueueSubscribe("EXEC", "my-group", func(m *stan.Msg) {
-	// 	fmt.Printf("\n\nyaya\n\n")
-	// 	fmt.Printf("Data: %v\n\n", m.Data)
-	// }, stan.StartAtSequence(0))
+	sc.QueueSubscribe("EXEC", "my-group", func(m *stan.Msg) {
+		fmt.Printf("\n\nyaya\n\n")
+		fmt.Printf("Data: %v\n\n", m.Data)
+	}, stan.StartAtSequence(0))
 
 	// Simple Async Subscriber
 	_, err = sc.Subscribe("EXEC", func(m *stan.Msg) {
@@ -60,68 +61,20 @@ func main() {
 		// n, er := b.Read(m.Data)
 		// fmt.Printf("n: %v, er: %v\n\n", n, er)
 
-		varr := &protos.MsgProto{}
-		err := proto.Unmarshal(m.Data, varr)
+		varr := &protos.Execution{}
+		err = proto.Unmarshal(m.Data, varr)
 		if err != nil {
 			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
 		} else {
 			fmt.Printf("Received a message: %+v\n", varr)
 		}
 
-		varr2 := &protos.PubMsg{}
+		varr2 := &protos2.NewOrderRequest{}
 		err = proto.Unmarshal(m.Data, varr2)
 		if err != nil {
 			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
 		} else {
-			fmt.Printf("Received a message: %+v\n", varr)
-		}
-
-		varr3 := &protos.Ack{}
-		err = proto.Unmarshal(m.Data, varr3)
-		if err != nil {
-			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
-		} else {
-			fmt.Printf("Received a message: %+v\n", varr)
-		}
-
-		varr4 := &protos.ConnectResponse{}
-		err = proto.Unmarshal(m.Data, varr4)
-		if err != nil {
-			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
-		} else {
-			fmt.Printf("Received a message: %+v\n", varr)
-		}
-
-		varr5 := &protos.PubAck{}
-		err = proto.Unmarshal(m.Data, varr5)
-		if err != nil {
-			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
-		} else {
-			fmt.Printf("Received a message: %+v\n", varr)
-		}
-
-		varr6 := &protos.SubscriptionRequest{}
-		err = proto.Unmarshal(m.Data, varr6)
-		if err != nil {
-			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
-		} else {
-			fmt.Printf("Received a message: %+v\n", varr)
-		}
-
-		varr7 := &protos.SubscriptionResponse{}
-		err = proto.Unmarshal(m.Data, varr7)
-		if err != nil {
-			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
-		} else {
-			fmt.Printf("Received a message: %+v\n", varr)
-		}
-
-		varr8 := &protos.Execution{}
-		err = proto.Unmarshal(m.Data, varr8)
-		if err != nil {
-			fmt.Printf("Err unmarshalling!: %v\n\n", err.Error())
-		} else {
-			fmt.Printf("Received a message: %+v\n", varr)
+			fmt.Printf("Received a message: %+v\n", varr2)
 		}
 	})
 

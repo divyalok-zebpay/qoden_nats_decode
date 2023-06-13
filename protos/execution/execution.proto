@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package main;
+package execution;
 
-option go_package = "./protos";
+option go_package = "./protos/execution";
 
 enum OrderStatus {
   Working = 0;

@@ -1,0 +1,46 @@
+
+syntax = "proto3";
+
+package neworder;
+
+option go_package = "./protos/neworder";
+
+enum SelfMatchPreventionStrategy {
+  CancelAggressor = 0;
+  CancelResting = 1;
+  CancelBoth = 2;
+}
+
+enum TimeInForce {
+  GoodTillCancel = 0;
+  ImmediateOrCancel = 1;
+  FillOrKill = 2;
+}
+
+enum OrderType {
+  Limit = 0;
+  Market = 1;
+  StopLimit = 2;
+  StopMarket = 3;
+}
+
+enum OrderSide {
+  Buy = 0;
+  Sell = 1;
+}
+
+message NewOrderRequest {
+  string Origin = 3;
+  OrderSide Side = 6;
+  string RequestedPrice = 7;
+  string RequestedAmount = 8;
+  OrderType Type = 10;
+  string QuoteLimit = 14;
+  int64 AccountId = 17;
+  string InstructionId = 19;
+  string InternalOrderId = 20;
+  int32 ExecutionEngineMarketId = 21;
+  SelfMatchPreventionStrategy SelfMatchStrategy = 22;
+  string SelfMatchToken = 23;
+  TimeInForce TimeInForce = 24;
+}
